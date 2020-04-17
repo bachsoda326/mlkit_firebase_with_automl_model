@@ -1,0 +1,1 @@
+# mlkit_firebase_with_automl_model
