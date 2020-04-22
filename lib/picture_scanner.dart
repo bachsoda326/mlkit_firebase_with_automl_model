@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_mlkit_language/firebase_mlkit_language.dart';
 import 'package:firebase_mlvision/firebase_mlvision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlkitfirebasefeatures/detector_painter.dart';
+import 'package:mlkitfirebasefeatures/language_translation.dart';
 
 class PictureScanner extends StatefulWidget {
   @override
@@ -103,6 +105,38 @@ class _PictureScannerState extends State<PictureScanner> {
     });
   }
 
+  void _translateLanguage() async {
+    var text = _scanResults.text;
+    var result =
+        await FirebaseLanguage.instance.languageIdentifier().processText(text);
+    var identifiedLanguage = result[0].languageCode;
+    switch (identifiedLanguage) {
+      case 'en':
+        identifiedLanguage = 'English';
+        break;
+      case 'vi':
+        identifiedLanguage = 'Vietnamese';
+        break;
+      case 'ja':
+      case 'ja-Latn':
+        identifiedLanguage = 'Japanese';
+        break;
+      default:
+        identifiedLanguage = 'Vietnamese';
+        break;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LanguageTranslation(
+          text: text,
+          detectedLanguage: identifiedLanguage,
+        ),
+      ),
+    );
+  }
+
   // Build img and draw rect
   Widget _buildImage() {
     return SizedBox(
@@ -166,7 +200,10 @@ class _PictureScannerState extends State<PictureScanner> {
       final result = _scanResults as VisionText;
       text = result.text;
       return Expanded(
-        child: Text(text),
+        flex: 1,
+        child: SingleChildScrollView(
+          child: Text(text),
+        ),
       );
     }
 
@@ -251,6 +288,12 @@ class _PictureScannerState extends State<PictureScanner> {
           : Column(
               children: <Widget>[
                 _buildImage(),
+                _currentDetector == Detector.text && _scanResults != null
+                    ? RaisedButton(
+                        child: Text("Translate"),
+                        onPressed: _translateLanguage,
+                      )
+                    : Container(),
                 _buildResults(),
               ],
             ),

@@ -3,11 +3,16 @@ import 'package:mlkitfirebasefeatures/camera_preview_scanner.dart';
 import 'package:mlkitfirebasefeatures/picture_scanner.dart';
 
 void main() {
-  runApp(MaterialApp(routes: <String, WidgetBuilder>{
-    '/': (context) => _HomeScreen(),
-    '/$PictureScanner': (context) => PictureScanner(),
-    '/$CameraPreviewScanner': (context) => CameraPreviewScanner(),
-  }));
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/': (context) => _HomeScreen(),
+        '/$PictureScanner': (context) => PictureScanner(),
+        '/$CameraPreviewScanner': (context) => CameraPreviewScanner(),
+      },
+    ),
+  );
 }
 
 class _HomeScreen extends StatefulWidget {

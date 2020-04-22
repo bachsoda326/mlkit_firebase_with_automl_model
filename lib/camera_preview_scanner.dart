@@ -33,6 +33,12 @@ class _CameraPreviewScannerState extends State<CameraPreviewScanner> {
     _initializeCamera();
   }
 
+  @override
+  void dispose() {
+    _camera.dispose();
+    super.dispose();
+  }
+
   // Init camera and scan
   void _initializeCamera() async {
     final CameraDescription description =
