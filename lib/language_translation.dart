@@ -125,9 +125,8 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
             height: 100,
             child: TextField(
               controller: _inputTextController,
-              expands: true,
               maxLines: null,
-              minLines: null,
+              keyboardType: TextInputType.text,
             ),
           ),
           RaisedButton(
