@@ -3,10 +3,15 @@ import 'package:firebase_mlvision/firebase_mlvision.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mlkitfirebasefeatures/detector_painter.dart';
-
-import 'scanner_utils.dart';
+import 'package:mlkitfirebasefeatures/scanner_utils.dart';
 
 class CameraPreviewScanner extends StatefulWidget {
+  static Future<dynamic> navigate(BuildContext context) {
+    return Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CameraPreviewScanner(),
+    ));
+  }
+
   @override
   State<StatefulWidget> createState() => _CameraPreviewScannerState();
 }

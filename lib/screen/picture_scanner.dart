@@ -6,9 +6,15 @@ import 'package:firebase_mlvision/firebase_mlvision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlkitfirebasefeatures/detector_painter.dart';
-import 'package:mlkitfirebasefeatures/language_translation.dart';
+import 'package:mlkitfirebasefeatures/screen/language_translation.dart';
 
 class PictureScanner extends StatefulWidget {
+  static Future<dynamic> navigate(BuildContext context) {
+    return Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => PictureScanner(),
+    ));
+  }
+
   @override
   State<StatefulWidget> createState() {
     return _PictureScannerState();
@@ -21,35 +27,24 @@ class _PictureScannerState extends State<PictureScanner> {
   dynamic _scanResults;
   Detector _currentDetector = Detector.text;
 
-  final TextRecognizer _textRecognizer =
-      FirebaseVision.instance.textRecognizer();
-  final BarcodeDetector _barcodeDetector =
-      FirebaseVision.instance.barcodeDetector();
+  final TextRecognizer _textRecognizer = FirebaseVision.instance.textRecognizer();
+  final BarcodeDetector _barcodeDetector = FirebaseVision.instance.barcodeDetector();
   final FaceDetector _faceDetector = FirebaseVision.instance.faceDetector();
   final ImageLabeler _imageLabeler = FirebaseVision.instance.imageLabeler();
-  final VisionEdgeImageLabeler _visionEdgeImageLabeler = FirebaseVision.instance
-      .visionEdgeImageLabeler('model', ModelLocation.Local);
+  final VisionEdgeImageLabeler _visionEdgeImageLabeler = FirebaseVision.instance.visionEdgeImageLabeler('model', ModelLocation.Local);
 
   // Get img from gallery/camera and scan
-  Future<void> _getAndScanImg(String source) async {
-    var imgSource;
-
-    if (source == 'Gallery') {
-      imgSource = ImageSource.gallery;
-    } else {
-      imgSource = ImageSource.camera;
-    }
-
-    final imgFile = await ImagePicker.pickImage(source: imgSource);
+  Future<void> _getAndScanImg(ImageSource source) async {
+    final imgFile = await ImagePicker.pickImage(source: source);
 
     if (imgFile != null) {
       _getImgSize(imgFile);
       _scanImg(imgFile);
-    }
 
-    setState(() {
-      _imgFile = imgFile;
-    });
+      setState(() {
+        _imgFile = imgFile;
+      });
+    }
   }
 
   // Get img size for drawing rect
@@ -107,8 +102,7 @@ class _PictureScannerState extends State<PictureScanner> {
 
   void _translateLanguage() async {
     var text = _scanResults.text;
-    var result =
-        await FirebaseLanguage.instance.languageIdentifier().processText(text);
+    var result = await FirebaseLanguage.instance.languageIdentifier().processText(text);
     var identifiedLanguage = result[0].languageCode;
     switch (identifiedLanguage) {
       case 'en':
@@ -160,10 +154,7 @@ class _PictureScannerState extends State<PictureScanner> {
                   ),
                 ),
               )
-            : _currentDetector == Detector.label ||
-                    _currentDetector == Detector.visionEdgeLabel
-                ? Container()
-                : CustomPaint(painter: _buildPaints()),
+            : _currentDetector == Detector.label || _currentDetector == Detector.visionEdgeLabel ? Container() : CustomPaint(painter: _buildPaints()),
       ),
     );
   }
@@ -202,7 +193,10 @@ class _PictureScannerState extends State<PictureScanner> {
       return Expanded(
         flex: 1,
         child: SingleChildScrollView(
-          child: Text(text),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(text),
+          ),
         ),
       );
     }
@@ -224,8 +218,7 @@ class _PictureScannerState extends State<PictureScanner> {
               break;
             case Detector.face:
               final result = _scanResults[index] as Face;
-              text =
-                  'SmilingProbability: ${result.smilingProbability}, TrackingId: ${result.trackingId}';
+              text = 'SmilingProbability: ${result.smilingProbability}, TrackingId: ${result.trackingId}';
               break;
             case Detector.label:
               final result = _scanResults[index] as ImageLabel;
@@ -249,9 +242,10 @@ class _PictureScannerState extends State<PictureScanner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Picture Scanner'),
+        title: Center(child: Text('Picture Scanner')),
         actions: <Widget>[
           PopupMenuButton<Detector>(
+            offset: Offset(0, 100),
             onSelected: (value) {
               _currentDetector = value;
               if (_imgFile != null) _scanImg(_imgFile);
@@ -298,20 +292,23 @@ class _PictureScannerState extends State<PictureScanner> {
               ],
             ),
       floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          FloatingActionButton(
-            heroTag: 'btn1',
-            child: Icon(Icons.image),
-            onPressed: () {
-              _getAndScanImg('Gallery');
-            },
+          Padding(
+            padding: const EdgeInsets.only(left: 34),
+            child: FloatingActionButton(
+              heroTag: 'btn1',
+              child: Icon(Icons.camera_alt),
+              onPressed: () {
+                _getAndScanImg(ImageSource.camera);
+              },
+            ),
           ),
           FloatingActionButton(
             heroTag: 'btn2',
-            child: Icon(Icons.camera_alt),
+            child: Icon(Icons.image),
             onPressed: () {
-              _getAndScanImg('Camera');
+              _getAndScanImg(ImageSource.gallery);
             },
           ),
         ],
