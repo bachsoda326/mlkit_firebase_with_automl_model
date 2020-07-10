@@ -55,6 +55,7 @@ flutter:
   #  - images/a_dot_ham.jpeg
 
   assets:
+    - assets/images/
     - assets/model/dict.txt
     - assets/model/manifest.json
     - assets/model/model.tflite

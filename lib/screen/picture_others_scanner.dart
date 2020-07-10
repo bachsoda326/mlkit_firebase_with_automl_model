@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlkitfirebasefeatures/bloc/detect_options_bloc.dart';
 import 'package:mlkitfirebasefeatures/detector_painter.dart';
+import 'package:mlkitfirebasefeatures/screen/language_translation.dart';
 
 class OthersPictureScanner extends StatefulWidget {
   static Future<dynamic> navigate(BuildContext context, {String detector}) {
@@ -206,7 +207,10 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
                 child: RaisedButton(
                   child: Text('Transalte'),
                   onPressed: () {
-                    Navigator.pop(context, resultText);
+                    if (widget.detector != null)
+                      Navigator.pop(context, resultText);
+                    else
+                      LanguageTranslation.navigate(context, text: resultText);
                   },
                 ),
               ),

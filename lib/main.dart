@@ -31,19 +31,58 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Expanded(
               child: InkWell(
-                child: Text('Detect Food'),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/images/food.jpg'),
+                    ),
+                  ),
+                  child: Center(
+                      child: Text(
+                    'Detect Food',
+                    style: TextStyle(fontSize: 30),
+                  )),
+                ),
                 onTap: () => showDetectSelectionBottomSheet(context),
               ),
             ),
             Expanded(
               child: InkWell(
-                child: Text('Translate'),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/images/translate.jpg'),
+                    ),
+                  ),
+                  child: Center(
+                      child: Text(
+                    'Translate',
+                    style: TextStyle(fontSize: 30),
+                  )),
+                ),
                 onTap: () => LanguageTranslation.navigate(context),
               ),
             ),
             Expanded(
               child: InkWell(
-                child: Text('Others'),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/images/other.jpg'),
+                    ),
+                  ),
+                  child: Center(
+                      child: Text(
+                    'Others',
+                    style: TextStyle(fontSize: 30),
+                  )),
+                ),
                 onTap: () => showDetectSelectionBottomSheet(context, others: true),
               ),
             ),
