@@ -25,6 +25,7 @@ dependencies:
   firebase_core: ^0.4.0
   camera: ^0.5.7+4
   rxdart: ^0.24.1
+  firebase_ml_vision: ^0.9.4
   firebase_mlvision:
     git:
       url: git://github.com/rishabnayak/firebase_mlvision

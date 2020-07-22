@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:firebase_mlvision/firebase_mlvision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart' as cl;
 import 'package:flutter/material.dart';
 
 enum Detector { text, barcode, face, label, visionEdgeLabel }
@@ -9,7 +10,7 @@ class TextDetectorPainter extends CustomPainter {
   TextDetectorPainter(this.absoluteImageSize, this.visionText);
 
   final Size absoluteImageSize;
-  final VisionText visionText;
+  final cl.VisionText visionText;
 
   @override
   void paint(Canvas canvas, Size size) {

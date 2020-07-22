@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_mlvision/firebase_mlvision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart' as cl;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlkitfirebasefeatures/bloc/detect_options_bloc.dart';
@@ -34,7 +35,7 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
   final _detectOptions = <String>['Text', 'Barcode', 'Face', 'Image label'];
   String _currentDetector;
 
-  final TextRecognizer _textRecognizer = FirebaseVision.instance.textRecognizer();
+  final cl.TextRecognizer _textRecognizer = cl.FirebaseVision.instance.cloudTextRecognizer();
   final BarcodeDetector _barcodeDetector = FirebaseVision.instance.barcodeDetector();
   final FaceDetector _faceDetector = FirebaseVision.instance.faceDetector();
   final ImageLabeler _imageLabeler = FirebaseVision.instance.imageLabeler();
@@ -96,11 +97,12 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
     _getImgSize(imgFile);
 
     final FirebaseVisionImage visionImg = FirebaseVisionImage.fromFile(imgFile);
+    final cl.FirebaseVisionImage cloudImg = cl.FirebaseVisionImage.fromFile(imgFile);
     dynamic results;
 
     switch (_currentDetector) {
       case 'Text':
-        results = await _textRecognizer.processImage(visionImg);
+        results = await _textRecognizer.processImage(cloudImg);
         break;
       case 'Barcode':
         results = await _barcodeDetector.detectInImage(visionImg);
@@ -185,7 +187,7 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
     } else {
       // Text detect result
       if (_currentDetector == 'Text') {
-        final result = _scanResults as VisionText;
+        final result = _scanResults as cl.VisionText;
         resultText = result.text;
         return Expanded(
           child: Column(
