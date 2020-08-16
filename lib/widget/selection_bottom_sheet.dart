@@ -58,7 +58,7 @@ class _DetectSelectionSheet extends State<DetectSelectionSheet> {
                     onPressed: () => !widget.others ? FoodPictureScanner.navigate(context) : OthersPictureScanner.navigate(context),
                   ),
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 5),
                 Expanded(
                   child: RaisedButton(
                     child: Text('Camera live'),

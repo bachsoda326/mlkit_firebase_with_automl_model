@@ -21,7 +21,10 @@ class LanguageTranslation extends StatefulWidget {
 }
 
 class _LanguageTranslationState extends State<LanguageTranslation> {
-  final List<String> _languages = ['English', 'Vietnamese', 'Japanese'];
+  final LanguageIdentifier languageIdentifier = FirebaseLanguage.instance.languageIdentifier();
+
+  final List<String> _languages1 = ['Language detect', 'English', 'Vietnamese', 'Japanese'];
+  final List<String> _languages2 = ['English', 'Vietnamese', 'Japanese'];
   String _firstLanguage;
   String _targetLanguage;
   var _supportFirstLanguage;
@@ -35,8 +38,8 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
 
   @override
   void initState() {
-    _firstLanguage = widget.detectedLanguage == null ? _languages[1] : widget.detectedLanguage;
-    _targetLanguage = _languages[0];
+    _firstLanguage = widget.detectedLanguage == null ? _languages1[0] : widget.detectedLanguage;
+    _targetLanguage = _languages1[1];
     _changeLanguage(language: _firstLanguage);
     _changeLanguage(language: _targetLanguage, isTargetLanguage: true);
     _inputTextController.text = widget.text;
@@ -55,6 +58,11 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
     });
 
     _inputText = _inputTextController.text;
+
+    if (_firstLanguage == 'Language detect') {
+      final List<LanguageLabel> labels = await languageIdentifier.processText(_inputText);
+      _supportFirstLanguage = labels[0].languageCode;
+    }
     var result = await FirebaseLanguage.instance.languageTranslator(_supportFirstLanguage, _supportTargetLanguage).processText(_inputText);
 
     setState(() {
@@ -74,6 +82,8 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
       case 'Japanese':
         supportLanguage = SupportedLanguages.Japanese;
         break;
+      default:
+        supportLanguage = SupportedLanguages.English;
     }
 
     if (!isTargetLanguage) {
@@ -101,7 +111,7 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
                 DropdownButton(
                   value: _firstLanguage,
                   icon: Padding(
-                    padding: const EdgeInsets.only(left: 2),
+                    padding: const EdgeInsets.only(left: 6),
                     child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
                   ),
                   iconSize: 20,
@@ -112,7 +122,7 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
                     });
                     _changeLanguage(language: _firstLanguage);
                   },
-                  items: _languages.map<DropdownMenuItem<String>>((String value) {
+                  items: _languages1.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem(value: value, child: Text(value));
                   }).toList(),
                 ),
@@ -123,7 +133,7 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
                 DropdownButton(
                   value: _targetLanguage,
                   icon: Padding(
-                    padding: const EdgeInsets.only(left: 2),
+                    padding: const EdgeInsets.only(left: 6),
                     child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
                   ),
                   iconSize: 20,
@@ -134,14 +144,13 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
                     });
                     _changeLanguage(language: _targetLanguage, isTargetLanguage: true);
                   },
-                  items: _languages.map<DropdownMenuItem<String>>((String value) {
+                  items: _languages2.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem(value: value, child: Text(value));
                   }).toList(),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 4),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(4),
@@ -219,27 +228,35 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              // Button transalte
-              RaisedButton(
-                child: Text('Detect text'),
-                onPressed: () async {
-                  var textResult = await OthersPictureScanner.navigate(context, detector: 'Text');
-                  if (textResult != null) {
-                    setState(() {
-                      _inputTextController.text = textResult;
-                    });
-                  }
-                },
-              ),
-              // Button detect text
-              RaisedButton(
-                child: Text('Translate'),
-                onPressed: _translate,
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                // Button transalte
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Detect text'),
+                    onPressed: () async {
+                      var textResult = await OthersPictureScanner.navigate(context, detector: 'Text');
+                      if (textResult != null) {
+                        setState(() {
+                          _inputTextController.text = textResult;
+                        });
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+                // Button detect text
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Translate'),
+                    onPressed: _translate,
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: Padding(

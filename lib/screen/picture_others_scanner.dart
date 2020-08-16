@@ -204,14 +204,17 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
               //Spacer(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: RaisedButton(
-                  child: Text('Transalte'),
-                  onPressed: () {
-                    if (widget.detector != null)
-                      Navigator.pop(context, resultText);
-                    else
-                      LanguageTranslation.navigate(context, text: resultText);
-                  },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: RaisedButton(
+                    child: Text('Translate'),
+                    onPressed: () {
+                      if (widget.detector != null)
+                        Navigator.pop(context, resultText);
+                      else
+                        LanguageTranslation.navigate(context, text: resultText);
+                    },
+                  ),
                 ),
               ),
             ],
@@ -258,70 +261,91 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
       ),
       body: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              RaisedButton(
-                child: Text('From gallery'),
-                onPressed: () => _getImg(ImageSource.gallery),
-              ),
-              RaisedButton(
-                child: Text('From camera'),
-                onPressed: () => _getImg(ImageSource.camera),
-              ),
-            ],
-          ),
           Padding(
-            padding: EdgeInsets.all(5),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                border: Border.all(color: Colors.grey),
-              ),
-              height: 300,
-              child: _imgFile == null
-                  ? Center(
-                      child: Text('No image selected'),
-                    )
-                  : Column(
-                      children: <Widget>[
-                        _buildImage(),
-                      ],
-                    ),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Gallery'),
+                    onPressed: () => _getImg(ImageSource.gallery),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Camera'),
+                    onPressed: () => _getImg(ImageSource.camera),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              StreamBuilder<String>(
-                  stream: _optionsBloc.detectDropdownStream,
-                  initialData: _currentDetector,
-                  builder: (context, snapshot) {
-                    // List detect options
-                    return DropdownButton(
-                      value: snapshot.data,
-                      onChanged: (val) {
-                        _currentDetector = val;
-                        _optionsBloc.setOption(val);
-                      },
-                      items: _detectOptions
-                          .map((e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ))
-                          .toList(),
-                    );
-                  }),
-              // Button detect
-              RaisedButton(
-                child: Text('Detect'),
-                onPressed: () {
-                  if (_imgFile != null) _scanImg(_imgFile);
-                },
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: _imgFile == null
+                    ? Center(
+                        child: Text('No image selected'),
+                      )
+                    : Column(
+                        children: <Widget>[
+                          _buildImage(),
+                        ],
+                      ),
               ),
-            ],
+            ),
           ),
-          _buildResults(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                StreamBuilder<String>(
+                    stream: _optionsBloc.detectDropdownStream,
+                    initialData: _currentDetector,
+                    builder: (context, snapshot) {
+                      // List detect options
+                      return Expanded(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          value: snapshot.data,
+                          onChanged: (val) {
+                            _currentDetector = val;
+                            _optionsBloc.setOption(val);
+                          },
+                          items: _detectOptions
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Center(child: Text(e)),
+                                  ))
+                              .toList(),
+                        ),
+                      );
+                    }),
+                    const SizedBox(width: 5),
+                // Button detect
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Detect'),
+                    onPressed: () {
+                      if (_imgFile != null) _scanImg(_imgFile);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: _buildResults()),
         ],
       ),
     );
