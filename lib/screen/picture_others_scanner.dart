@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_mlvision/firebase_mlvision.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlkitfirebasefeatures/bloc/detect_options_bloc.dart';
 import 'package:mlkitfirebasefeatures/detector_painter.dart';
@@ -165,7 +166,7 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
               ? Container(
                   child: Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
                 )
@@ -180,75 +181,92 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
     if (_scanResults == null) {
       resultText = '';
       return Center(
-        child: Text(resultText, style: Theme.of(context).textTheme.subtitle1),
+        child: Text(resultText, style: GoogleFonts.ptSerif()),
       );
     } else {
+      bool _isResultNull = false;
+      switch (_currentDetector) {
+        case 'Text':
+          if (_scanResults.text == "") _isResultNull = true;
+          break;
+        case 'Barcode':
+        case 'Face':
+        case 'Image label':
+          if (_scanResults.length == 0) _isResultNull = true;
+          break;
+      }
+
+      if (_isResultNull) {
+        resultText = 'No result.';
+        return Center(
+          child: Text(resultText, style: GoogleFonts.ptSerif()),
+        );
+      }
       // Text detect result
       if (_currentDetector == 'Text') {
         final result = _scanResults as VisionText;
         resultText = result.text;
-        return Expanded(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: ListView(
-                  //shrinkWrap: true,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(resultText, textAlign: TextAlign.left),
-                    ),
-                  ],
-                ),
-              ),
-              //Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: RaisedButton(
-                    child: Text('Translate'),
-                    onPressed: () {
-                      if (widget.detector != null)
-                        Navigator.pop(context, resultText);
-                      else
-                        LanguageTranslation.navigate(context, text: resultText);
-                    },
+        return Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                //shrinkWrap: true,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(resultText, textAlign: TextAlign.left, style: GoogleFonts.ptSerif()),
                   ),
+                ],
+              ),
+            ),
+            //Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 2,
+                child: RaisedButton.icon(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                  icon: Icon(Icons.translate, color: Colors.blue),
+                  label: Text('Translate', style: GoogleFonts.ptSerif()),
+                  onPressed: () {
+                    if (widget.detector != null)
+                      Navigator.pop(context, resultText);
+                    else
+                      LanguageTranslation.navigate(context, text: resultText);
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       }
 
       // Other detect result
-      return Expanded(
-        child: ListView.builder(
-          itemCount: _scanResults.length,
-          itemBuilder: (context, index) {
-            switch (_currentDetector) {
-              case 'Barcode':
-                final result = _scanResults[index] as Barcode;
-                resultText = result.rawValue;
-                break;
-              // case 'Face':
-              //   final result = _scanResults[index] as Face;
-              //   text = 'SmilingProbability: ${result.smilingProbability}, TrackingId: ${result.trackingId}';
-              //   break;
-              case 'Image label':
-                final result = _scanResults[index] as ImageLabel;
-                resultText = result.text;
-                break;
-              default:
-                break;
-            }
+      return ListView.builder(
+        itemCount: _scanResults.length,
+        itemBuilder: (context, index) {
+          switch (_currentDetector) {
+            case 'Barcode':
+              final result = _scanResults[index] as Barcode;
+              resultText = result.rawValue;
+              break;
+            // case 'Face':
+            //   final result = _scanResults[index] as Face;
+            //   text = 'SmilingProbability: ${result.smilingProbability}, TrackingId: ${result.trackingId}';
+            //   break;
+            case 'Image label':
+              final result = _scanResults[index] as ImageLabel;
+              resultText = result.text;
+              break;
+            default:
+              break;
+          }
 
-            return ListTile(
-              title: Text(resultText),
-            );
-          },
-        ),
+          return ListTile(
+            title: Text(resultText, style: GoogleFonts.ptSerif()),
+          );
+        },
       );
     }
   }
@@ -257,96 +275,107 @@ class _OthersPictureScannerState extends State<OthersPictureScanner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Others Detect'),
+        title: Text('Others Detect', style: GoogleFonts.ptSerif()),
+        backgroundColor: Colors.blue[300],
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Expanded(
-                  child: RaisedButton(
-                    child: Text('Gallery'),
-                    onPressed: () => _getImg(ImageSource.gallery),
+      body: Container(
+        color: Colors.grey[300],
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      icon: Icon(Icons.image, color: Colors.blue),
+                      label: Text('Gallery', style: GoogleFonts.ptSerif()),
+                      onPressed: () => _getImg(ImageSource.gallery),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 5),
-                Expanded(
-                  child: RaisedButton(
-                    child: Text('Camera'),
-                    onPressed: () => _getImg(ImageSource.camera),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      icon: Icon(Icons.camera_alt, color: Colors.blue),
+                      label: Text('Camera', style: GoogleFonts.ptSerif()),
+                      onPressed: () => _getImg(ImageSource.camera),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: _imgFile == null
-                    ? Center(
-                        child: Text('No image selected'),
-                      )
-                    : Column(
-                        children: <Widget>[
-                          _buildImage(),
-                        ],
-                      ),
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                StreamBuilder<String>(
-                    stream: _optionsBloc.detectDropdownStream,
-                    initialData: _currentDetector,
-                    builder: (context, snapshot) {
-                      // List detect options
-                      return Expanded(
-                        child: DropdownButton(
-                          isExpanded: true,
-                          value: snapshot.data,
-                          onChanged: (val) {
-                            _currentDetector = val;
-                            _optionsBloc.setOption(val);
-                          },
-                          items: _detectOptions
-                              .map((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Center(child: Text(e)),
-                                  ))
-                              .toList(),
-                        ),
-                      );
-                    }),
-                    const SizedBox(width: 5),
-                // Button detect
-                Expanded(
-                  child: RaisedButton(
-                    child: Text('Detect'),
-                    onPressed: () {
-                      if (_imgFile != null) _scanImg(_imgFile);
-                    },
+            Flexible(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    border: Border.all(color: Colors.grey),
                   ),
+                  child: _imgFile == null
+                      ? Center(
+                          child: Text('Choose image.', style: GoogleFonts.ptSerif()),
+                        )
+                      : Column(
+                          children: <Widget>[
+                            _buildImage(),
+                          ],
+                        ),
                 ),
-              ],
+              ),
             ),
-          ),
-          Flexible(
-            flex: 1,
-            child: _buildResults()),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  StreamBuilder<String>(
+                      stream: _optionsBloc.detectDropdownStream,
+                      initialData: _currentDetector,
+                      builder: (context, snapshot) {
+                        // List detect options
+                        return Expanded(
+                          child: DropdownButton(
+                            isExpanded: true,
+                            value: snapshot.data,
+                            onChanged: (val) {
+                              _currentDetector = val;
+                              _optionsBloc.setOption(val);
+                            },
+                            items: _detectOptions
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Center(child: Text(e, style: GoogleFonts.ptSerif())),
+                                    ))
+                                .toList(),
+                          ),
+                        );
+                      }),
+                  const SizedBox(width: 5),
+                  // Button detect
+                  Expanded(
+                    child: RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      icon: Icon(Icons.art_track, color: Colors.blue),
+                      label: Text('Detect', style: GoogleFonts.ptSerif()),
+                      onPressed: () {
+                        if (_imgFile != null) _scanImg(_imgFile);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(flex: 1, child: _buildResults()),
+          ],
+        ),
       ),
     );
   }

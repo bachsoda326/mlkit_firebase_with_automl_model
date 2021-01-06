@@ -1,5 +1,6 @@
 import 'package:firebase_mlkit_language/firebase_mlkit_language.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mlkitfirebasefeatures/screen/picture_others_scanner.dart';
 
 class LanguageTranslation extends StatefulWidget {
@@ -98,196 +99,208 @@ class _LanguageTranslationState extends State<LanguageTranslation> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Translate'),
+        title: Text('Translate', style: GoogleFonts.ptSerif()),
+        backgroundColor: Colors.blue[300],
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                // First lang
-                DropdownButton(
-                  value: _firstLanguage,
-                  icon: Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
-                  ),
-                  iconSize: 20,
-                  elevation: 16,
-                  onChanged: (value) {
-                    setState(() {
-                      _firstLanguage = value;
-                    });
-                    _changeLanguage(language: _firstLanguage);
-                  },
-                  items: _languages1.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem(value: value, child: Text(value));
-                  }).toList(),
-                ),
-                Center(
-                  child: Text('|', style: TextStyle(color: Colors.grey)),
-                ),
-                // Second lang
-                DropdownButton(
-                  value: _targetLanguage,
-                  icon: Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
-                  ),
-                  iconSize: 20,
-                  elevation: 16,
-                  onChanged: (value) {
-                    setState(() {
-                      _targetLanguage = value;
-                    });
-                    _changeLanguage(language: _targetLanguage, isTargetLanguage: true);
-                  },
-                  items: _languages2.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem(value: value, child: Text(value));
-                  }).toList(),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                //height: 160,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        // Input
-                        child: TextField(
-                          controller: _inputTextController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(fontSize: 15),
-                          expands: true,
-                          minLines: null,
-                          maxLines: null,
-                          keyboardType: TextInputType.text,
-                          onTap: () {
-                            if (!_showErase)
-                              setState(() {
-                                _showErase = true;
-                                _isEraseHide = false;
-                              });
-                          },
-                          // onChanged: (val) {
-                          //   if (!_isEraseShow)
-                          //     setState(() {
-                          //       _isEraseShow = true;
-                          //     });
-                          // },
-                          onSubmitted: (val) {
-                            if (val.isEmpty) {
-                              setState(() {
-                                _showErase = false;
-                              });
-                            } else {
-                              setState(() {
-                                _isEraseHide = true;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                      _showErase
-                          ? IconButton(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: Icon(Icons.close),
-                              onPressed: () {
-                                setState(() {
-                                  if (_inputTextController.text.isNotEmpty) {
-                                    _inputTextController.clear();
-                                  }
-                                  // else {
-                                  //   _inputTextController.clear();
-                                  // }
-                                  if (_isEraseHide) _showErase = false;
-                                });
-                              },
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                // Button transalte
-                Expanded(
-                  child: RaisedButton(
-                    child: Text('Detect text'),
-                    onPressed: () async {
-                      var textResult = await OthersPictureScanner.navigate(context, detector: 'Text');
-                      if (textResult != null) {
-                        setState(() {
-                          _inputTextController.text = textResult;
-                        });
-                      }
+      body: Container(
+        color: Colors.grey[300],
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // First lang
+                  DropdownButton(
+                    value: _firstLanguage,
+                    icon: Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
+                    ),
+                    iconSize: 20,
+                    elevation: 16,
+                    onChanged: (value) {
+                      setState(() {
+                        _firstLanguage = value;
+                      });
+                      _changeLanguage(language: _firstLanguage);
                     },
+                    items: _languages1.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(value: value, child: Text(value, style: GoogleFonts.ptSerif()));
+                    }).toList(),
                   ),
-                ),
-                const SizedBox(width: 5),
-                // Button detect text
-                Expanded(
-                  child: RaisedButton(
-                    child: Text('Translate'),
-                    onPressed: _translate,
+                  Center(
+                    child: Text('|', style: TextStyle(color: Colors.grey)),
                   ),
-                ),
-              ],
+                  // Second lang
+                  DropdownButton(
+                    value: _targetLanguage,
+                    icon: Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Icon(Icons.arrow_downward, color: Colors.blueGrey),
+                    ),
+                    iconSize: 20,
+                    elevation: 16,
+                    onChanged: (value) {
+                      setState(() {
+                        _targetLanguage = value;
+                      });
+                      _changeLanguage(language: _targetLanguage, isTargetLanguage: true);
+                    },
+                    items: _languages2.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(value: value, child: Text(value, style: GoogleFonts.ptSerif()));
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                width: double.infinity,
-                //height: 160,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-                // Translate
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: _translatedText != null
-                      ? SingleChildScrollView(
-                          child: Text(
-                            _translatedText,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  //height: 160,
+                  decoration: BoxDecoration(
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          // Input
+                          child: TextField(
+                            controller: _inputTextController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Enter text',
+                              hintStyle: GoogleFonts.ptSerif(),
+                            ),
                             style: TextStyle(fontSize: 15),
-                          ),
-                        )
-                      : Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                            expands: true,
+                            minLines: null,
+                            maxLines: null,
+                            keyboardType: TextInputType.text,
+                            onTap: () {
+                              if (!_showErase)
+                                setState(() {
+                                  _showErase = true;
+                                  _isEraseHide = false;
+                                });
+                            },
+                            // onChanged: (val) {
+                            //   if (!_isEraseShow)
+                            //     setState(() {
+                            //       _isEraseShow = true;
+                            //     });
+                            // },
+                            onSubmitted: (val) {
+                              if (val.isEmpty) {
+                                setState(() {
+                                  _showErase = false;
+                                });
+                              } else {
+                                setState(() {
+                                  _isEraseHide = true;
+                                });
+                              }
+                            },
                           ),
                         ),
+                        _showErase
+                            ? IconButton(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_inputTextController.text.isNotEmpty) {
+                                      _inputTextController.clear();
+                                    }
+                                    // else {
+                                    //   _inputTextController.clear();
+                                    // }
+                                    if (_isEraseHide) _showErase = false;
+                                  });
+                                },
+                              )
+                            : Container(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  // Button transalte
+                  Expanded(
+                    child: RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      icon: Icon(Icons.art_track, color: Colors.blue),
+                      label: Text('Detect text', style: GoogleFonts.ptSerif()),
+                      onPressed: () async {
+                        var textResult = await OthersPictureScanner.navigate(context, detector: 'Text');
+                        if (textResult != null) {
+                          setState(() {
+                            _inputTextController.text = textResult;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  // Button detect text
+                  Expanded(
+                    child: RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      icon: Icon(Icons.translate, color: Colors.blue),
+                      label: Text('Translate', style: GoogleFonts.ptSerif()),
+                      onPressed: _translate,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  width: double.infinity,
+                  //height: 160,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  // Translate
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: _translatedText != null
+                        ? SingleChildScrollView(
+                            child: Text(
+                              _translatedText,
+                              style: GoogleFonts.ptSerif(fontSize: 15),
+                            ),
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

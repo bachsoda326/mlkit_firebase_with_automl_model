@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mlkitfirebasefeatures/screen/camera_preview_scanner.dart';
 import 'package:mlkitfirebasefeatures/screen/picture_food_scanner.dart';
 import 'package:mlkitfirebasefeatures/screen/picture_others_scanner.dart';
@@ -28,7 +29,7 @@ class _DetectSelectionSheet extends State<DetectSelectionSheet> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Color(0xff64b5f6),
         borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
       ),
       child: Column(
@@ -39,7 +40,7 @@ class _DetectSelectionSheet extends State<DetectSelectionSheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Select detection method'),
+                Text('Select detection method', style: GoogleFonts.ptSerif(color: Colors.white)),
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => Navigator.pop(context),
@@ -53,15 +54,21 @@ class _DetectSelectionSheet extends State<DetectSelectionSheet> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: RaisedButton(
-                    child: Text('Picture'),
+                  child: RaisedButton.icon(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                    icon: Icon(Icons.image, color: Colors.blue),
+                    label: Text('Picture', style: GoogleFonts.ptSerif()),
                     onPressed: () => !widget.others ? FoodPictureScanner.navigate(context) : OthersPictureScanner.navigate(context),
                   ),
                 ),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: RaisedButton(
-                    child: Text('Camera live'),
+                  child: RaisedButton.icon(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                    icon: Icon(Icons.camera_alt, color: Colors.blue),
+                    label: Text('Camera live', style: GoogleFonts.ptSerif()),
                     onPressed: () => CameraPreviewScanner.navigate(context),
                   ),
                 ),
